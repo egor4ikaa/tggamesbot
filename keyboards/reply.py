@@ -84,7 +84,9 @@ age_skip_menu = ReplyKeyboardMarkup(
 # Клавиатура "Пропустить" для фото/гео
 photo_skip_menu = ReplyKeyboardMarkup(
     keyboard=[
-        [KeyboardButton(text="⬅️ Назад в меню")],
+        [KeyboardButton(text="⏭ Пропустить")],
+        [KeyboardButton(text="⬅️ Назад в меню")]
+
     ],
     resize_keyboard=True,
     one_time_keyboard=True
@@ -93,7 +95,8 @@ photo_skip_menu = ReplyKeyboardMarkup(
 location_menu = ReplyKeyboardMarkup(
     keyboard=[
         [KeyboardButton(text="📍 Отправить геопозицию", request_location=True)],
-        [KeyboardButton(text="⬅️ Назад в меню")],
+        [KeyboardButton(text="⏭ Пропустить")],
+        [KeyboardButton(text="⬅️ Назад в меню")]
     ],
     resize_keyboard=True,
     one_time_keyboard=True
