@@ -35,7 +35,7 @@ def make_choice_keyboard(options: list[str], with_skip: bool = True) -> ReplyKey
         buttons.append([KeyboardButton(text="⏭ Пропустить")])
     return ReplyKeyboardMarkup(keyboard=buttons, resize_keyboard=True, one_time_keyboard=True)
 
-# --- Запуск регистрации ---
+
 @router.message(Command("profile"))
 @router.message(lambda msg: msg.text == "👤 Мой профиль")
 async def cmd_profile(message: types.Message, state: FSMContext):
@@ -78,14 +78,14 @@ async def cmd_profile(message: types.Message, state: FSMContext):
                 reply_markup=edit_profile_menu
             )
 
-# --- Редактирование ---
+
 @router.message(lambda msg: msg.text == "✏️ Редактировать профиль")
 async def edit_profile(message: types.Message, state: FSMContext):
     await message.answer("✏️ Начинаем редактирование профиля.", reply_markup=ReplyKeyboardRemove())
     await message.answer("Как вас зовут?")
     await state.set_state(ProfileStates.waiting_for_name)
 
-# --- Имя ---
+
 @router.message(StateFilter(ProfileStates.waiting_for_name))
 async def process_name(message: types.Message, state: FSMContext):
     name = message.text.strip()
@@ -96,7 +96,7 @@ async def process_name(message: types.Message, state: FSMContext):
     await message.answer("Теперь введите вашу фамилию:")
     await state.set_state(ProfileStates.waiting_for_surname)
 
-# --- Фамилия ---
+
 @router.message(StateFilter(ProfileStates.waiting_for_surname))
 async def process_surname(message: types.Message, state: FSMContext):
     surname = message.text.strip()
@@ -107,7 +107,7 @@ async def process_surname(message: types.Message, state: FSMContext):
     await message.answer("Укажите ваш пол:", reply_markup=gender_menu)
     await state.set_state(ProfileStates.waiting_for_gender)
 
-# --- Пол ---
+
 @router.message(StateFilter(ProfileStates.waiting_for_gender))
 async def process_gender(message: types.Message, state: FSMContext):
     text = message.text
@@ -149,7 +149,7 @@ async def _ask_region(message: types.Message, state: FSMContext):
     await message.answer("Выберите ваш регион:", reply_markup=make_choice_keyboard(REGIONS))
     await state.set_state(ProfileStates.waiting_for_region)
 
-# --- Регион ---
+
 @router.message(StateFilter(ProfileStates.waiting_for_region))
 async def process_region(message: types.Message, state: FSMContext):
     text = message.text
@@ -166,7 +166,7 @@ async def process_region(message: types.Message, state: FSMContext):
     await state.update_data(interests=[])  # будем накапливать
     await state.set_state(ProfileStates.waiting_for_interests)
 
-# --- Интересы (мульти-выбор) ---
+
 @router.message(StateFilter(ProfileStates.waiting_for_interests))
 async def process_interests(message: types.Message, state: FSMContext):
     text = message.text
@@ -189,7 +189,7 @@ async def process_interests(message: types.Message, state: FSMContext):
     else:
         await message.answer("Выберите интерес из списка:", reply_markup=make_choice_keyboard(INTERESTS))
 
-# --- Фото ---
+
 async def _ask_photo(message: types.Message, state: FSMContext):
     await message.answer("Загрузите фото профиля (jpg/jpeg/png) или нажмите «Пропустить»:",
                          reply_markup=photo_skip_menu)
@@ -216,7 +216,7 @@ async def process_photo(message: types.Message, state: FSMContext):
                 return
         await message.answer("🖼 Не похоже на фото. Загрузите изображение в формате jpg, jpeg или png.")
 
-# --- Геопозиция ---
+
 async def _ask_location(message: types.Message, state: FSMContext):
     await message.answer("Укажите ваше местоположение (можно пропустить):", reply_markup=location_menu)
     await state.set_state(ProfileStates.waiting_for_location)
@@ -234,7 +234,7 @@ async def process_location(message: types.Message, state: FSMContext):
 
     await state.update_data(location=location)
 
-    # --- Сохраняем всё в БД ---
+    
     data = await state.get_data()
     user_id = message.from_user.id
 
@@ -254,4 +254,5 @@ async def process_location(message: types.Message, state: FSMContext):
     await state.clear()
 
     # Показываем профиль
+
     await cmd_profile(message, state)
